@@ -1,0 +1,6 @@
+TimeCreated,EventID,Level,ProviderName,Message
+2026-07-01 10:15:22,4625,Failure Audit,Microsoft-Windows-Security-Auditing,An account failed to log on
+2026-07-01 10:20:10,7031,Error,Service Control Manager,The Windows Update service terminated unexpectedly
+2026-07-01 10:25:45,41,Critical,Microsoft-Windows-Kernel-Power,The system has rebooted without cleanly shutting down first
+2026-07-01 10:30:12,10016,Warning,Microsoft-Windows-DistributedCOM,The application-specific permission settings do not grant Local Activation permission
+2026-07-01 10:35:00,6005,Information,EventLog,The Event log service was started
