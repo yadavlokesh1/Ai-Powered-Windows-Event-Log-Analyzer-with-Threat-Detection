@@ -1,11 +1,18 @@
 import streamlit as st
 import pandas as pd
+from dotenv import load_dotenv
+from google import genai
+import os
+
+load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 st.set_page_config(page_title="AI Windows Event Log Analyzer", layout="wide")
 
 st.title("AI Windows Event Log Analyzer")
 st.write(
-    "Upload a Windows Event Log CSV file to detect important events and view recommended resolution steps."
+    "Upload a Windows Event Log CSV file to detect important events, severity, resolution steps, and Gemini AI analysis."
 )
 
 uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
@@ -59,6 +66,37 @@ def get_resolution(event_id, level):
         ]
 
 
+def get_ai_analysis(event_id, level, source, message):
+    prompt = f"""
+You are a senior Windows Server Administrator.
+
+Analyze this Windows Event Log and provide a short troubleshooting summary.
+
+Event ID: {event_id}
+Level: {level}
+Source: {source}
+Message: {message}
+
+Return the answer in this format:
+
+Root Cause:
+Impact:
+Recommended Fix:
+
+Keep it concise and practical.
+"""
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+        return response.text
+
+    except Exception as e:
+        return f"AI Error: {e}"
+
+
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
@@ -66,14 +104,12 @@ if uploaded_file is not None:
     st.dataframe(df)
 
     required_columns = ["TimeCreated", "EventID", "Level", "ProviderName", "Message"]
-
     missing_columns = [column for column in required_columns if column not in df.columns]
 
     if missing_columns:
         st.error(f"Missing required columns: {missing_columns}")
     else:
         important_levels = ["Error", "Critical", "Warning", "Failure Audit"]
-
         filtered_df = df[df["Level"].isin(important_levels)]
 
         st.subheader("Important Events Found")
@@ -82,7 +118,7 @@ if uploaded_file is not None:
 
         st.dataframe(filtered_df)
 
-        st.subheader("Analysis and Recommended Resolution")
+        st.subheader("Analysis, Resolution and AI Summary")
 
         if len(filtered_df) == 0:
             st.success("No Error, Critical, Warning, or Failure Audit events found.")
@@ -90,13 +126,15 @@ if uploaded_file is not None:
             for index, row in filtered_df.iterrows():
                 event_id = int(row["EventID"])
                 level = row["Level"]
+                source = row["ProviderName"]
+                message = row["Message"]
 
                 st.markdown("---")
                 st.write(f"**Time Created:** {row['TimeCreated']}")
                 st.write(f"**Event ID:** {event_id}")
                 st.write(f"**Level:** {level}")
-                st.write(f"**Source:** {row['ProviderName']}")
-                st.write(f"**Message:** {row['Message']}")
+                st.write(f"**Source:** {source}")
+                st.write(f"**Message:** {message}")
 
                 if level == "Critical":
                     st.error("Severity: High")
@@ -110,6 +148,10 @@ if uploaded_file is not None:
 
                 for step in resolution_steps:
                     st.write(f"- {step}")
+
+                st.write("**Gemini AI Analysis:**")
+                ai_result = get_ai_analysis(event_id, level, source, message)
+                st.info(ai_result)
 
 else:
     st.info("Please upload a CSV file to start analysis.")
