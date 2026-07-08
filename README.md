@@ -1,10 +1,10 @@
-# 🤖 AI Windows Event Log Analyzer with Threat Detection
+# AI Windows Event Log Analyzer with Threat Detection
 
 A lightweight AI-powered tool that analyzes exported Windows Event Logs and generates root cause analysis, severity, and troubleshooting recommendations using Google Gemini.
 
 ---
 
-## 🚨 Problem & Solution
+## Problem & Solution
 
 **The Problem:** Windows administrators spend valuable time manually reviewing Event Viewer logs to identify critical issues and determine the correct troubleshooting steps.
 
@@ -12,7 +12,7 @@ A lightweight AI-powered tool that analyzes exported Windows Event Logs and gene
 
 ---
 
-## ✨ Features
+## Features
 
 - Upload Windows Event Log CSV files
 - Detect Critical, Error, Warning & Failure Audit events
@@ -33,7 +33,7 @@ A lightweight AI-powered tool that analyzes exported Windows Event Logs and gene
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 ### 1. Clone the repository
 
@@ -78,29 +78,27 @@ The application will automatically:
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 Screenshots are available in the **screenshots/** folder.
 
 ---
 
-## 📌 Example Output
+## Example Output
 
 After uploading a Windows Event Log CSV, the tool displays:
 
 - Log Preview
 - Important Events
 - Severity Level
-- 🤖 Gemini AI Analysis
+- Gemini AI Analysis
 - Root Cause
 - Recommended Resolution
 
 ---
 
-## 💡 Future Improvements
+## Future Improvements
 
-- EVTX file support
-- Downloadable PDF reports
 - Incident summary generation
 - Dashboard & charts
 - Email alerts
